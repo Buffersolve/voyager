@@ -54,7 +54,7 @@ public fun BottomSheetNavigator(
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
     key: String = compositionUniqueId(),
     sheetContent: BottomSheetNavigatorContent = { CurrentScreen() },
-    content: BottomSheetNavigatorContent
+    content: @Composable (bottomSheetNavigator: BottomSheetNavigator, sheetState: ModalBottomSheetState) -> Unit
 ) {
     var hideBottomSheet: (() -> Unit)? = null
     val coroutineScope = rememberCoroutineScope()
@@ -92,7 +92,7 @@ public fun BottomSheetNavigator(
                     sheetContent(bottomSheetNavigator)
                 },
                 content = {
-                    content(bottomSheetNavigator)
+                    content(bottomSheetNavigator, sheetState)
                 }
             )
         }
