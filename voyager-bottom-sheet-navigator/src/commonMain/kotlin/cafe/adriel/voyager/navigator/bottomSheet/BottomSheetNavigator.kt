@@ -52,17 +52,17 @@ public fun BottomSheetNavigator(
     sheetGesturesEnabled: Boolean = true,
     skipHalfExpanded: Boolean = true,
     animationSpec: AnimationSpec<Float> = SwipeableDefaults.AnimationSpec,
-    key: String = compositionUniqueId(),
-    sheetContent: BottomSheetNavigatorContent = { CurrentScreen() },
-    content: @Composable (bottomSheetNavigator: BottomSheetNavigator, sheetState: ModalBottomSheetState) -> Unit
-) {
-    var hideBottomSheet: (() -> Unit)? = null
-    val coroutineScope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState(
+    sheetState: ModalBottomSheetState = rememberModalBottomSheetState(
         initialValue = ModalBottomSheetValue.Hidden,
         skipHalfExpanded = skipHalfExpanded,
         animationSpec = animationSpec
-    )
+    ),
+    key: String = compositionUniqueId(),
+    sheetContent: BottomSheetNavigatorContent = { CurrentScreen() },
+    content: BottomSheetNavigatorContent
+) {
+    var hideBottomSheet: (() -> Unit)? = null
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(sheetState, sheetState.currentValue) {
         if (sheetState.currentValue == ModalBottomSheetValue.Hidden) {
@@ -92,7 +92,7 @@ public fun BottomSheetNavigator(
                     sheetContent(bottomSheetNavigator)
                 },
                 content = {
-                    content(bottomSheetNavigator, sheetState)
+                    content(bottomSheetNavigator)
                 }
             )
         }
@@ -106,8 +106,8 @@ public class BottomSheetNavigator @InternalVoyagerApi constructor(
     private val coroutineScope: CoroutineScope
 ) : Stack<Screen> by navigator {
 
-    public val isVisible: Boolean
-        get() = sheetState.isVisible
+    public val state: ModalBottomSheetState
+        get() = sheetState
 
     public fun show(screen: Screen) {
         coroutineScope.launch {
@@ -118,7 +118,7 @@ public class BottomSheetNavigator @InternalVoyagerApi constructor(
 
     public fun hide() {
         coroutineScope.launch {
-            if (isVisible) {
+            if (sheetState.isVisible) {
                 sheetState.hide()
                 replaceAll(HiddenBottomSheetScreen)
             } else if (sheetState.targetValue == ModalBottomSheetValue.Hidden) {
