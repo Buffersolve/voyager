@@ -153,7 +153,7 @@ fun Project.setupModuleForComposeMultiplatform(
 private fun KotlinJvmOptions.configureKotlinJvmOptions(
     enableExplicitMode: Boolean
 ) {
-    jvmTarget = JavaVersion.VERSION_1_8.toString()
+    jvmTarget = JavaVersion.VERSION_11.toString()
 
     if (enableExplicitMode) freeCompilerArgs += "-Xexplicit-api=strict"
     freeCompilerArgs += "-opt-in=cafe.adriel.voyager.core.annotation.InternalVoyagerApi"
